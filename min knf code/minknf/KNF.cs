@@ -100,19 +100,9 @@ namespace minknf
         {
             coreIndexesRows = coreIndexesRows.Distinct().ToList();
             List<int> coreIndexesColumn = new List<int>();
-            //for (int i = 0; i < coreIndexesRows.Count; i++)
-            //{
-            //    for(int j = 0; j < matrix.GetLength(1); j++)
-            //    {
-            //        if(matrix[coreIndexesRows[i],j] == 1)
-            //        {
-            //            coreIndexesColumn.Add(j);
-            //        }
-            //    }
-            //}
-            for (int i = coreIndexesRows.Count - 1; i >= 0; i--)
+            for (int i = 0; i < coreIndexesRows.Count; i++)
             {
-                for (int j = matrix.GetLength(1) - 1; j >= 0; j--)
+                for (int j = 0; j < matrix.GetLength(1); j++)
                 {
                     if (matrix[coreIndexesRows[i], j] == 1)
                     {
@@ -120,6 +110,16 @@ namespace minknf
                     }
                 }
             }
+            //for (int i = coreIndexesRows.Count - 1; i >= 0; i--)
+            //{
+            //    for (int j = matrix.GetLength(1) - 1; j >= 0; j--)
+            //    {
+            //        if (matrix[coreIndexesRows[i], j] == 1)
+            //        {
+            //            coreIndexesColumn.Add(j);
+            //        }
+            //    }
+            //}
             coreIndexesColumn = coreIndexesColumn.Distinct().ToList();
             //
             return Matrix.deleteRowsAndColumns(matrix, coreIndexesRows, coreIndexesColumn);
