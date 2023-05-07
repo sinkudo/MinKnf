@@ -66,7 +66,6 @@ namespace minknf
                     mxweight = curweight;
                     ind = i;
                 }
-
             }
             return new Tuple<int,int>(ind,mxweight);
         }

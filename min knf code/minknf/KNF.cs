@@ -50,7 +50,10 @@ namespace minknf
                     implicantMatrix[i, j] = (consRes[i].DoesCover(startingMonomials[j]) ? 1 : 0);
                 }
             }
+
+
             // матрица
+            //Console.WriteLine("матрица");
             //for (int i = 0; i < implicantMatrix.GetLength(0); i++)
             //{
             //    for (int j = 0; j < implicantMatrix.GetLength(1); j++)
@@ -59,13 +62,26 @@ namespace minknf
             //    }
             //    Console.WriteLine();
             //}
+            //Console.WriteLine();
+
 
             this.setMonomials(consRes);
+
             List<int> coreImplicants = GetCoreImplicantsIndexesInMatrix(implicantMatrix);
-            
+
+
+            //foreach (var i in coreImplicants)
+            //{
+            //    Console.WriteLine(i + " " + monomials[i]);
+            //}
+
+
             int[,] matrixWithoutCore = MatrixCore(implicantMatrix, coreImplicants);
             int toCover = matrixWithoutCore.GetLength(1);
             int covered = 0;
+
+            List<int> indexesInMatrixWithoutCore = Enumerable.Range(0, implicantMatrix.GetLength(0)).ToList();
+            indexesInMatrixWithoutCore = indexesInMatrixWithoutCore.Except(coreImplicants).ToList();
 
             //// без корок
             //for (int i = 0; i < matrixWithoutCore.GetLength(0); i++)
@@ -77,20 +93,40 @@ namespace minknf
             //    Console.WriteLine();
             //}
 
-
-            while (covered != toCover)
-            {
-                Tuple<int, int> heaviestRow = Matrix.getHeaviestRow(matrixWithoutCore);
-                covered += heaviestRow.Item2;
-                coreImplicants.Add(heaviestRow.Item1);
-                List<int> listForDeletingFromMatrix = new List<int>();
-                listForDeletingFromMatrix.Add(heaviestRow.Item1);
-                matrixWithoutCore = MatrixCore(matrixWithoutCore, listForDeletingFromMatrix);
-            }
+            GA ga = new GA(matrixWithoutCore);
+            int[] best = ga.GO();
             List<DisjunctiveMonomial> ans = new List<DisjunctiveMonomial>();
             foreach (int i in coreImplicants)
-                ans.Add(this.monomials[i]);
+            {
+                ans.Add(monomials[i]);
+            }
+            for (int i = 0; i < indexesInMatrixWithoutCore.Count; i++)
+            {
+                if (best[i] == 1)
+                {
+                    ans.Add(monomials[indexesInMatrixWithoutCore[i]]);
+                    //Console.WriteLine(indexesInMatrixWithoutCore[i]);
+                }
+            }
             this.monomials = ans;
+            //foreach (var i in coreImplicants)
+            //{
+            //    ans.Add(monomials[i]);
+            //    Console.WriteLine(i + " " + monomials[i]);
+            //}
+            //while (covered != toCover)
+            //{
+            //    Tuple<int, int> heaviestRow = Matrix.getHeaviestRow(matrixWithoutCore);
+            //    covered += heaviestRow.Item2;
+            //    coreImplicants.Add(heaviestRow.Item1);
+            //    List<int> listForDeletingFromMatrix = new List<int>();
+            //    listForDeletingFromMatrix.Add(heaviestRow.Item1);
+            //matrixWithoutCore = MatrixCore(matrixWithoutCore, listForDeletingFromMatrix);
+            //}
+            //List<DisjunctiveMonomial> ans = new List<DisjunctiveMonomial>();
+            //foreach (int i in coreImplicants)
+            //    ans.Add(this.monomials[i]);
+            //this.monomials = ans;
         }
         private void setMonomials(List<DisjunctiveMonomial> toSet)
         {
