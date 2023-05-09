@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using CommunityToolkit.HighPerformance;
@@ -8,15 +8,18 @@ namespace minknf
     class KNF
     {
         private List<DisjunctiveMonomial> monomials = new List<DisjunctiveMonomial>();
-        public KNF(String knf)
+        private Dictionary<string, string> dict = new Dictionary<string, string>();
+        public KNF(String knf, Dictionary<string, string> dict)
         {
             knf = knf.Replace("(", String.Empty);
             knf = knf.Replace(")", String.Empty);
             string[] strmonomials = knf.Split('&');
-            foreach(var monomial in strmonomials)
+            foreach (var monomial in strmonomials)
             {
                 monomials.Add(new DisjunctiveMonomial(monomial));
             }
+
+            this.dict = dict;
         }
         public KNF(List<DisjunctiveMonomial> other)
         {
@@ -93,7 +96,7 @@ namespace minknf
             //    Console.WriteLine();
             //}
 
-            GA ga = new GA(matrixWithoutCore);
+            GA ga = new GA(matrixWithoutCore, dict);
             int[] best = ga.GO();
             List<DisjunctiveMonomial> ans = new List<DisjunctiveMonomial>();
             foreach (int i in coreImplicants)
