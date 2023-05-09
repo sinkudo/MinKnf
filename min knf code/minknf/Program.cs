@@ -42,7 +42,7 @@ namespace minknf
                 
                 for (int i = 0; i < n; i++){
                     string temp_string = bul[i];
-                    if (!Regex.IsMatch(temp_string, "[x0-9]+|[\\-x0-9]+"))
+                    if (!Regex.IsMatch(temp_string, "x[0-9]+|\\-x[0-9]+"))
                     {
                         return false;
                     }
