@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
@@ -7,14 +7,25 @@ namespace minknf
 {
     class GA
     {
+        public int epochs;
+        public double mutationChance;
+        public double crossoverChance;
+        public int populationSize;
+        //Dictionary<string, string> data = FileParser.Parse(FILEPATH);
+
         PopulationMatrix populationmatrix;
         int[,] coverageMatrix;
         Random random = new Random();
-        int epochs = 10_000;
-        double mutationChance = 1;
-        int populationSize = 100;
-        public GA(int[,] matrix)
+        //int epochs = 10_000;
+        //double mutationChance = 1;
+        //int populationSize = 100;
+        public GA(int[,] matrix, Dictionary<string, string> data)
         {
+            epochs = Int32.Parse(data["epochs"]);
+            mutationChance = Double.Parse(data["mutationChance"]);
+            crossoverChance = Double.Parse(data["crossoverChance"]);
+            populationSize = Int32.Parse(data["populationSize"]);
+
             coverageMatrix = matrix;
             populationmatrix = new PopulationMatrix(populationSize, matrix.GetLength(0));
             //Console.WriteLine(matrix.GetLength(0) + " " + matrix.GetLength(1));
