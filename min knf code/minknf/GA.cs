@@ -15,12 +15,16 @@ namespace minknf
         PopulationMatrix populationmatrix;
         int[,] coverageMatrix;
         Random random = new Random();
-        public GA(int[,] matrix, Dictionary<string, string> data)
+        public GA(int[,] matrix, int epochs, int populationSize, double mutationChance, double crossoverChance)
         {
-            epochs = Int32.Parse(data["epochs"]);
-            mutationChance = Double.Parse(data["mutationChance"]);
-            crossoverChance = Double.Parse(data["crossoverChance"]);
-            populationSize = Int32.Parse(data["populationSize"]);
+            //epochs = Int32.Parse(data["epochs"]);
+            //mutationChance = Double.Parse(data["mutationChance"]);
+            //crossoverChance = Double.Parse(data["crossoverChance"]);
+            //populationSize = Int32.Parse(data["populationSize"]);
+            this.epochs = epochs;
+            this.populationSize = populationSize;
+            this.mutationChance = mutationChance;
+            this.crossoverChance = crossoverChance;
 
             coverageMatrix = matrix;
             populationmatrix = new PopulationMatrix(populationSize, matrix.GetLength(0));

@@ -8,19 +8,6 @@ namespace minknf
     class KNF
     {
         private List<DisjunctiveMonomial> monomials = new List<DisjunctiveMonomial>();
-        private Dictionary<string, string> dict = new Dictionary<string, string>();
-        public KNF(String knf, Dictionary<string, string> dict)
-        {
-            knf = knf.Replace("(", String.Empty);
-            knf = knf.Replace(")", String.Empty);
-            string[] strmonomials = knf.Split('&');
-            foreach (var monomial in strmonomials)
-            {
-                monomials.Add(new DisjunctiveMonomial(monomial));
-            }
-
-            this.dict = dict;
-        }
         public KNF(String knf)
         {
             knf = knf.Replace("(", String.Empty);
@@ -45,11 +32,18 @@ namespace minknf
             knf = new KNF(implicants);
         }
 
-
-
-
-        public void MinimizeKnf()
+        public void MinimizeKnf(int epochs = 10_000, int populationSize = 100, double mutationChance = 1, double crossoverChance = 1)
         {
+            //if(dict == null)
+            //{
+            //    dict = new Dictionary<string, string>()
+            //    {
+            //        {"epochs", "10000"},
+            //        {"mutationChance", "1"},
+            //        {"crossoverChance", "1"},
+            //        {"populationSize", "100"},
+            //    };
+            //}
             List<DisjunctiveMonomial> startingMonomials = new List<DisjunctiveMonomial>(monomials);
             List<DisjunctiveMonomial> consRes = this.ConsumeMonomials(this.monomials);
             consRes = consRes.Distinct(new DisjunctiveMonomialEqualityComparer()).ToList();
@@ -100,7 +94,7 @@ namespace minknf
             //    Console.WriteLine();
             //}
 
-            GA ga = new GA(matrixWithoutCore, dict);
+            GA ga = new GA(matrixWithoutCore, epochs, populationSize, mutationChance, crossoverChance);
             //GA ga = new GA(matrixWithoutCore);
             int[] best = ga.GO();
             List<DisjunctiveMonomial> ans = new List<DisjunctiveMonomial>();
