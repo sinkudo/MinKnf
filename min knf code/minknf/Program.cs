@@ -12,38 +12,6 @@ namespace minknf
     {
         static void Main(string[] args)
         {
-            //string currentDirectory = Environment.CurrentDirectory;
-            //Console.WriteLine(currentDirectory);
-            //string paramsFilePath = Path.Combine(currentDirectory, "params.txt");
-            //Console.WriteLine(paramsFilePath);
-            //Dictionary<string, string> data = FileParser.Parse(paramsFilePath);
-            //if (data == null)
-            //{
-            //    System.Environment.Exit(1);
-            //}
-
-            //string sknfFilePath = Path.Combine(currentDirectory, "sknf.txt");
-            //String sknf = File.ReadAllText(sknfFilePath);
-
-            //String outFilePath = Path.Combine(currentDirectory, "out.txt");
-            //if (StringChecking(sknf))
-            //{
-            //    KNF knf = new KNF(sknf, data);
-            //    knf.MinimizeKnf();
-            //    try
-            //    {
-            //        File.WriteAllText(outFilePath, knf.ToString());
-            //        Console.WriteLine("String successfully written to the file.");
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        Console.WriteLine("An error occurred while writing to the file: " + ex.Message);
-            //    }
-            //    //Console.WriteLine(knf.ToString());
-            //}
-
-
-            
             //incode without exe test
 
             //String sknf = "(x1vx2vx3)&(x1vx2v-x3)&(-x1vx2vx3)&(x1v-x2vx3)";
@@ -51,22 +19,86 @@ namespace minknf
             //sknf = "(x1vx2v-x3v-x4)&(x1v-x2vx3vx4)&(x1v-x2vx3v-x4)&(x1v-x2v-x3v-x4)&(-x1vx2vx3vx4)&(-x1vx2vx3v-x4)&(-x1vx2v-x3vx4)&(-x1vx2v-x3v-x4)&(-x1v-x2vx3vx4)&(-x1v-x2vx3v-x4)";
             //sknf = "(x1vx2v-x3)&(x1v-x2vx3)&(-x1v-x2v-x3)&(x1v-x2v-x3)";
             //sknf = "(x1vx2v-x3v-x4vx5vx6)&(x1v-x2vx3vx4vx5v-x6)&(x1v-x2vx3v-x4vx5vx6)&(x1v-x2v-x3v-x4vx5vx6)&(-x1vx2vx3vx4vx5vx6)&(-x1vx2vx3v-x4vx5vx6)&(-x1vx2v-x3vx4v-x5vx6)&(-x1vx2v-x3v-x4vx5vx6)&(-x1v-x2vx3vx4v-x5vx6)&(-x1v-x2vx3v-x4vx5vx6)";
-            var data = new Dictionary<string, string>()
+            //var data = new Dictionary<string, string>()
+            //{
+            //    {"epochs", "10000"},
+            //    {"mutationChance", "1"},
+            //    {"crossoverChance", "1"},
+            //    {"populationSize", "100"},
+            //};
+            
+            
+            //KNF knf = new KNF("(x1vx2v-x3v-x4vx5vx6)&(x1v-x2vx3vx4vx5v-x6)&(x1v-x2vx3v-x4vx5vx6)&(x1v-x2v-x3v-x4vx5vx6)&(-x1vx2vx3vx4vx5vx6)&(-x1vx2vx3v-x4vx5vx6)&(-x1vx2v-x3vx4v-x5vx6)&(-x1vx2v-x3v-x4vx5vx6)&(-x1v-x2vx3vx4v-x5vx6)&(-x1v-x2vx3v-x4vx5vx6)");
+            //KNF knf = new KNF("(x1vx2vx3)&(x1vx2v-x3)&(-x1v-x2v-x3)");
+
+
+            string currentDirectory = Environment.CurrentDirectory;
+            // read knf from file
+            string sknfFilePath = Path.Combine(currentDirectory, "sknf.txt");
+            String sknf = String.Empty;
+            try
             {
-                {"epochs", "10000"},
-                {"mutationChance", "1"},
-                {"crossoverChance", "1"},
-                {"populationSize", "100"},
-            };
-            KNF knf = new KNF("(x1vx2v-x3v-x4vx5vx6)&(x1v-x2vx3vx4vx5v-x6)&(x1v-x2vx3v-x4vx5vx6)&(x1v-x2v-x3v-x4vx5vx6)&(-x1vx2vx3vx4vx5vx6)&(-x1vx2vx3v-x4vx5vx6)&(-x1vx2v-x3vx4v-x5vx6)&(-x1vx2v-x3v-x4vx5vx6)&(-x1v-x2vx3vx4v-x5vx6)&(-x1v-x2vx3v-x4vx5vx6)");
+                sknf = File.ReadAllText(sknfFilePath);
+            }
+            catch
+            {
+                Console.WriteLine("Ошибка файла sknf.txt\nНажмите на любую кнопку");
+                Console.ReadKey();
+                System.Environment.Exit(1);
+            }
 
-            knf.MinimizeKnf();
+            // read params
+            string paramsFilePath = Path.Combine(currentDirectory, "params.txt");
+            Dictionary<string, string> data = new Dictionary<string, string>();
+            try
+            {
+                data = FileParser.Parse(paramsFilePath);
+            }
+            catch
+            {
+                Console.WriteLine("Ошибка файла params.txt\nНажмите на любую кнопку");
+                Console.ReadKey();
+                System.Environment.Exit(1);
+            }
+            int epochs = Int32.Parse(data["epochs"]);
+            int populationSize = Int32.Parse(data["populationSize"]);
+            double mutationChance = Double.Parse(data["mutationChance"]);
+            double crossoverChance = Double.Parse(data["crossoverChance"]);
 
-            Console.WriteLine(knf.ToString());
+
+            String outFilePath = Path.Combine(currentDirectory, "out.txt");
+
+            if (StringChecking(sknf))
+            {
+                Console.WriteLine("Начало работы алгоритма...");
+                KNF knf = new KNF(sknf);
+                knf.MinimizeKnf(epochs, populationSize, mutationChance, crossoverChance);
+                try
+                {
+                    File.WriteAllText(outFilePath, knf.ToString());
+                    Console.WriteLine("Успешная запись в файл.\nНажмите на любую кнопку");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Произошла ошибка при записи в файл: " + ex.Message);
+                    Console.WriteLine("Произошла ошибка при записи в файл");
+                }
+                //Console.WriteLine(knf.ToString());
+            }
+            else
+            {
+                Console.WriteLine("Неверный формат строки. Нажмите любую клавишу");
+                File.WriteAllText(outFilePath, "Неверный формат строки!!!");
+            }
+            Console.ReadKey();
         }
 
         private static Boolean StringChecking(string str)
         {
+            if (str == String.Empty)
+            {
+                return false;
+            }
             str = str.Replace("(", String.Empty);
             str = str.Replace(")", String.Empty);
             string[] strings = str.Split("&");
