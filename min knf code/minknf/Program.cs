@@ -29,39 +29,40 @@ namespace minknf
             // sknfPath paramsPath
 
             string currentDirectory = Environment.CurrentDirectory;
-            string paramsFilePath = Path.Combine(currentDirectory, "params.txt");
-            Console.WriteLine(paramsFilePath);
-            Dictionary<string, string> data = FileParser.Parse(paramsFilePath);
-            if (data == null)
-            {
-                System.Environment.Exit(1);
-            }
+            Console.WriteLine(currentDirectory);
+            //string paramsFilePath = Path.Combine(currentDirectory, "params.txt");
+            //Console.WriteLine(paramsFilePath);
+            //Dictionary<string, string> data = FileParser.Parse(paramsFilePath);
+            //if (data == null)
+            //{
+            //    System.Environment.Exit(1);
+            //}
 
-            string sknfFilePath = Path.Combine(currentDirectory, "sknf.txt");
-            String sknf = File.ReadAllText(sknfFilePath);
+            //string sknfFilePath = Path.Combine(currentDirectory, "sknf.txt");
+            //String sknf = File.ReadAllText(sknfFilePath);
 
-            String outFilePath = Path.Combine(currentDirectory, "out.txt");
-            //String sknf = "(x1vx2vx3)&(x1vx2v-x3)&(-x1vx2vx3)&(x1v-x2vx3)";
-            //sknf = "(x1vx2vx3)&(x1vx2v-x3)&(-x1v-x2v-x3)";
-            //sknf = "(x1vx2v-x3v-x4)&(x1v-x2vx3vx4)&(x1v-x2vx3v-x4)&(x1v-x2v-x3v-x4)&(-x1vx2vx3vx4)&(-x1vx2vx3v-x4)&(-x1vx2v-x3vx4)&(-x1vx2v-x3v-x4)&(-x1v-x2vx3vx4)&(-x1v-x2vx3v-x4)";
-            //sknf = "(x1vx2v-x3)&(x1v-x2vx3)&(-x1v-x2v-x3)&(x1v-x2v-x3)";
-            //sknf = "(x1vx2v-x3v-x4vx5vx6)&(x1v-x2vx3vx4vx5v-x6)&(x1v-x2vx3v-x4vx5vx6)&(x1v-x2v-x3v-x4vx5vx6)&(-x1vx2vx3vx4vx5vx6)&(-x1vx2vx3v-x4vx5vx6)&(-x1vx2v-x3vx4v-x5vx6)&(-x1vx2v-x3v-x4vx5vx6)&(-x1v-x2vx3vx4v-x5vx6)&(-x1v-x2vx3v-x4vx5vx6)";
-            //Console.WriteLine(StringChecking(sknf));
-            if (StringChecking(sknf))
-            {
-                KNF knf = new KNF(sknf, data);
-                knf.MinimizeKnf();
-                try
-                {
-                    File.WriteAllText(outFilePath, knf.ToString());
-                    Console.WriteLine("String successfully written to the file.");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("An error occurred while writing to the file: " + ex.Message);
-                }
-                //Console.WriteLine(knf.ToString());
-            }
+            //String outFilePath = Path.Combine(currentDirectory, "out.txt");
+            ////String sknf = "(x1vx2vx3)&(x1vx2v-x3)&(-x1vx2vx3)&(x1v-x2vx3)";
+            ////sknf = "(x1vx2vx3)&(x1vx2v-x3)&(-x1v-x2v-x3)";
+            ////sknf = "(x1vx2v-x3v-x4)&(x1v-x2vx3vx4)&(x1v-x2vx3v-x4)&(x1v-x2v-x3v-x4)&(-x1vx2vx3vx4)&(-x1vx2vx3v-x4)&(-x1vx2v-x3vx4)&(-x1vx2v-x3v-x4)&(-x1v-x2vx3vx4)&(-x1v-x2vx3v-x4)";
+            ////sknf = "(x1vx2v-x3)&(x1v-x2vx3)&(-x1v-x2v-x3)&(x1v-x2v-x3)";
+            ////sknf = "(x1vx2v-x3v-x4vx5vx6)&(x1v-x2vx3vx4vx5v-x6)&(x1v-x2vx3v-x4vx5vx6)&(x1v-x2v-x3v-x4vx5vx6)&(-x1vx2vx3vx4vx5vx6)&(-x1vx2vx3v-x4vx5vx6)&(-x1vx2v-x3vx4v-x5vx6)&(-x1vx2v-x3v-x4vx5vx6)&(-x1v-x2vx3vx4v-x5vx6)&(-x1v-x2vx3v-x4vx5vx6)";
+            ////Console.WriteLine(StringChecking(sknf));
+            //if (StringChecking(sknf))
+            //{
+            //    KNF knf = new KNF(sknf, data);
+            //    knf.MinimizeKnf();
+            //    try
+            //    {
+            //        File.WriteAllText(outFilePath, knf.ToString());
+            //        Console.WriteLine("String successfully written to the file.");
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        Console.WriteLine("An error occurred while writing to the file: " + ex.Message);
+            //    }
+            //    //Console.WriteLine(knf.ToString());
+            //}
             //Console.WriteLine(10_000 + 1);
         }
 

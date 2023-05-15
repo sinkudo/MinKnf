@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using CommunityToolkit.HighPerformance;
 namespace minknf
@@ -76,6 +77,12 @@ namespace minknf
             foreach (int i in row)
                 weight += i;
             return weight;
+        }
+        static public int[] GetRow(int[,] matrix, int rowNumber)
+        {
+            return Enumerable.Range(0, matrix.GetLength(1))
+                .Select(x => matrix[rowNumber, x])
+                .ToArray();
         }
     }
 }

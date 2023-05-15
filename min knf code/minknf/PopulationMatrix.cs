@@ -29,5 +29,9 @@ namespace minknf
             get => matrix[i,j];
             set => matrix[i,j] = value;
         }
+        public int[,] GetMatrix()
+        {
+            return matrix;
+        }
     }
 }

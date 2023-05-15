@@ -7,11 +7,10 @@ namespace minknf
 {
     class GA
     {
-        public int epochs;
-        public double mutationChance;
-        public double crossoverChance;
-        public int populationSize;
-        //Dictionary<string, string> data = FileParser.Parse(FILEPATH);
+        private int epochs;
+        private double mutationChance;
+        private double crossoverChance;
+        private int populationSize;
 
         PopulationMatrix populationmatrix;
         int[,] coverageMatrix;
@@ -85,32 +84,38 @@ namespace minknf
         }
         private Tuple<int[],int[]> Crossover()
         {
+
             int n = populationmatrix.GetRows();
-            int m = populationmatrix.GetColumns();
+            int[] a = Matrix.GetRow(populationmatrix.GetMatrix(), random.Next(0, n));
+            int[] b = Matrix.GetRow(populationmatrix.GetMatrix(), random.Next(0, n));
+            Tuple<int[], int[]> ans = new Tuple<int[], int[]>(a,b);
+            if (random.NextDouble() <= crossoverChance) {
+                ans = CrossoverOperation(a, b);
+            }
+            return ans;
+        }
+        private Tuple<int[], int[]> CrossoverOperation(int[] a, int[] b)
+        {
 
-            //int crossoverPoint = random.Next(0, m);
-
-            int[] child1 = new int[m];
-            int[] child2 = new int[m];
+            int[] child1 = new int[a.Length];
+            int[] child2 = new int[a.Length];
 
             bool correct1 = false;
             bool correct2 = false;
             while (!correct1 && !correct2)
             {
-                int parent1ind = random.Next(0, n);
-                int parent2ind = random.Next(0, n);
-                int crossoverPoint = random.Next(0, m);
-                for (int i = 0; i < m; i++)
+                int crossoverPoint = random.Next(0, a.Length);
+                for (int i = 0; i < a.Length; i++)
                 {
                     if (i <= crossoverPoint)
                     {
-                        child1[i] = populationmatrix[parent1ind, i];
-                        child2[i] = populationmatrix[parent2ind, i];
+                        child1[i] = a[i];
+                        child2[i] = b[i];
                     }
                     else
                     {
-                        child1[i] = populationmatrix[parent2ind, i];
-                        child2[i] = populationmatrix[parent1ind, i];
+                        child1[i] = b[i];
+                        child2[i] = a[i];
                     }
                 }
                 correct1 = ValidateChild(child1);
