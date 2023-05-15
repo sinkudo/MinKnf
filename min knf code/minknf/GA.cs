@@ -15,9 +15,6 @@ namespace minknf
         PopulationMatrix populationmatrix;
         int[,] coverageMatrix;
         Random random = new Random();
-        //int epochs = 10_000;
-        //double mutationChance = 1;
-        //int populationSize = 100;
         public GA(int[,] matrix, Dictionary<string, string> data)
         {
             epochs = Int32.Parse(data["epochs"]);
@@ -27,7 +24,6 @@ namespace minknf
 
             coverageMatrix = matrix;
             populationmatrix = new PopulationMatrix(populationSize, matrix.GetLength(0));
-            //Console.WriteLine(matrix.GetLength(0) + " " + matrix.GetLength(1));
             for (int i = 0; i < populationmatrix.GetRows(); i++)
             {
                 for (int j = 0; j < populationmatrix.GetColumns(); j++)
@@ -35,7 +31,22 @@ namespace minknf
                     populationmatrix[i, j] = random.Next(0, 2);
                 }
             }
-            //CoutMatrix();
+        }
+        public GA(int[,] matrix)
+        {
+            epochs = 10_000;
+            mutationChance = 1;
+            crossoverChance = 1;
+            populationSize = 100;
+            coverageMatrix = matrix;
+            populationmatrix = new PopulationMatrix(populationSize, matrix.GetLength(0));
+            for (int i = 0; i < populationmatrix.GetRows(); i++)
+            {
+                for (int j = 0; j < populationmatrix.GetColumns(); j++)
+                {
+                    populationmatrix[i, j] = random.Next(0, 2);
+                }
+            }
         }
         public int[] GO()
         {
@@ -84,42 +95,41 @@ namespace minknf
         }
         private Tuple<int[],int[]> Crossover()
         {
-
             int n = populationmatrix.GetRows();
             int[] a = Matrix.GetRow(populationmatrix.GetMatrix(), random.Next(0, n));
             int[] b = Matrix.GetRow(populationmatrix.GetMatrix(), random.Next(0, n));
             Tuple<int[], int[]> ans = new Tuple<int[], int[]>(a,b);
             if (random.NextDouble() <= crossoverChance) {
-                ans = CrossoverOperation(a, b);
+                bool correct1 = false;
+                bool correct2 = false;
+                while (!correct1 && !correct2)
+                {
+                    a = Matrix.GetRow(populationmatrix.GetMatrix(), random.Next(0, n));
+                    b = Matrix.GetRow(populationmatrix.GetMatrix(), random.Next(0, n));
+                    ans = CrossoverOperation(a, b);
+                    correct1 = ValidateChild(ans.Item1);
+                    correct2 = ValidateChild(ans.Item2);
+                }
             }
             return ans;
         }
         private Tuple<int[], int[]> CrossoverOperation(int[] a, int[] b)
         {
-
             int[] child1 = new int[a.Length];
             int[] child2 = new int[a.Length];
-
-            bool correct1 = false;
-            bool correct2 = false;
-            while (!correct1 && !correct2)
+            int crossoverPoint = random.Next(0, a.Length);
+            for (int i = 0; i < a.Length; i++)
             {
-                int crossoverPoint = random.Next(0, a.Length);
-                for (int i = 0; i < a.Length; i++)
+                if (i <= crossoverPoint)
                 {
-                    if (i <= crossoverPoint)
-                    {
-                        child1[i] = a[i];
-                        child2[i] = b[i];
-                    }
-                    else
-                    {
-                        child1[i] = b[i];
-                        child2[i] = a[i];
-                    }
+                    child1[i] = a[i];
+                    child2[i] = b[i];
                 }
-                correct1 = ValidateChild(child1);
-                correct2 = ValidateChild(child2);
+                else
+                {
+                    child1[i] = b[i];
+                    child2[i] = a[i];
+                }
             }
             return new Tuple<int[], int[]>(child1, child2);
         }

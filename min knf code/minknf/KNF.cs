@@ -21,6 +21,16 @@ namespace minknf
 
             this.dict = dict;
         }
+        public KNF(String knf)
+        {
+            knf = knf.Replace("(", String.Empty);
+            knf = knf.Replace(")", String.Empty);
+            string[] strmonomials = knf.Split('&');
+            foreach (var monomial in strmonomials)
+            {
+                monomials.Add(new DisjunctiveMonomial(monomial));
+            }
+        }
         public KNF(List<DisjunctiveMonomial> other)
         {
             monomials = new List<DisjunctiveMonomial>(other);
@@ -73,12 +83,6 @@ namespace minknf
             List<int> coreImplicants = GetCoreImplicantsIndexesInMatrix(implicantMatrix);
 
 
-            //foreach (var i in coreImplicants)
-            //{
-            //    Console.WriteLine(i + " " + monomials[i]);
-            //}
-
-
             int[,] matrixWithoutCore = MatrixCore(implicantMatrix, coreImplicants);
             int toCover = matrixWithoutCore.GetLength(1);
             int covered = 0;
@@ -97,6 +101,7 @@ namespace minknf
             //}
 
             GA ga = new GA(matrixWithoutCore, dict);
+            //GA ga = new GA(matrixWithoutCore);
             int[] best = ga.GO();
             List<DisjunctiveMonomial> ans = new List<DisjunctiveMonomial>();
             foreach (int i in coreImplicants)
@@ -108,7 +113,6 @@ namespace minknf
                 if (best[i] == 1)
                 {
                     ans.Add(monomials[indexesInMatrixWithoutCore[i]]);
-                    //Console.WriteLine(indexesInMatrixWithoutCore[i]);
                 }
             }
             this.monomials = ans;
