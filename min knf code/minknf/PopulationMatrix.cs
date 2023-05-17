@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace minknf
@@ -7,13 +8,16 @@ namespace minknf
     class PopulationMatrix
     {
         int[,] matrix;
-        public PopulationMatrix(int n, int m)
+        public PopulationMatrix(int n, int m, List<int>[] genePool)
         {
             Random random = new Random();
             matrix = new int[n, m];
             for (int i = 0; i < n; i++)
                 for (int j = 0; j < m; j++)
-                    matrix[i, j] = random.Next(0, 2);
+                {
+                    int ind = random.Next(0, genePool[j].Count());
+                    matrix[i, j] = genePool[j][ind];
+                }
               
         }
         public int GetColumns()

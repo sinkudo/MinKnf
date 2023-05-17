@@ -7,31 +7,37 @@ namespace minknf
 {
     class DisjunctiveMonomial
     {
-        private int[] vars;
+        public int[] vars;
 
         public DisjunctiveMonomial(int size)
         {
             vars = new int[size];
         }
 
+        //public DisjunctiveMonomial(String str)
+        //{
+        //    str = str.Replace("v", String.Empty);
+        //    str = str.Replace("x", String.Empty);
+
+        //    vars = new int[str.Replace("-", String.Empty).Length];
+
+        //    bool xval = false;
+        //    foreach (var c in str)
+        //    {
+        //        if (c == '-')
+        //        {
+        //            xval = true;
+        //            continue;
+        //        }
+        //        vars[int.Parse(c.ToString()) - 1] = Convert.ToInt32(xval);
+        //        xval = false;
+        //    }
+        //}
         public DisjunctiveMonomial(String str)
         {
-            str = str.Replace("v", String.Empty);
-            str = str.Replace("x", String.Empty);
-
-            vars = new int[str.Replace("-", String.Empty).Length];
-
-            bool xval = false;
-            foreach(var c in str)
-            {
-                if (c == '-')
-                {
-                    xval = true;
-                    continue;
-                }
-                vars[int.Parse(c.ToString()) - 1] = Convert.ToInt32(xval);
-                xval = false;
-            }
+            vars = new int[str.Length];
+            for (int i = 0; i < vars.Length; i++)
+                vars[i] = str[i] - '0';
         }
         public DisjunctiveMonomial(String str, int sz)
         {

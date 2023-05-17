@@ -84,5 +84,22 @@ namespace minknf
                 .Select(x => matrix[rowNumber, x])
                 .ToArray();
         }
+        static public void CoutArr(int[] arr)
+        {
+            foreach(var i in arr)
+                Console.Write("{0} ", i);
+            Console.WriteLine();
+            Console.WriteLine();
+        }
+        static public void CoutMatr(int[,] arr)
+        {
+            for (int i = 0; i < arr.GetLength(0); i++)
+            {
+                for (int j = 0; j < arr.GetLength(1); j++)
+                    Console.Write(arr[i, j]);
+                Console.WriteLine();
+            }
+            Console.WriteLine();
+        }
     }
 }
