@@ -5,18 +5,13 @@ using System.Linq;
 
 namespace minknf
 {
-    class GA
+    class GA : BestCoverageAlgo
     {
         private int epochs;
         private double mutationChance;
         private double crossoverChance;
         private int populationSize;
-        private List<int>[] genePool;
-        private List<int> geneIndexes;
-
         PopulationMatrix populationmatrix;
-        int[,] coverageMatrix;
-        Random random = new Random();
         public GA(int[,] matrix, int epochs, int populationSize, double mutationChance, double crossoverChance, List<int> geneIndexes)
         {
             this.epochs = epochs;
@@ -120,15 +115,6 @@ namespace minknf
                     populationmatrix[individumToReplace, j] = child[j];
             }
         }
-        private bool CompareFitness(int[] possibleReplace, int[] currentIndividum)
-        {
-
-            //return Fitness(possibleReplace) < Fitness(currentIndividum);
-            int replaceCount = possibleReplace.Distinct().Count();
-            int curCount = currentIndividum.Distinct().Count();
-
-            return (replaceCount < curCount) || (replaceCount == curCount && WeightOfIndividum(possibleReplace) > WeightOfIndividum(currentIndividum));
-        }
         private List<int> BestIndividum()
         {
             int[] best = Matrix.GetRow(populationmatrix.GetMatrix(), 0);
@@ -151,16 +137,6 @@ namespace minknf
             }
             
             return ans;
-        }
-        private int WeightOfIndividum(int[] individum)
-        {
-            int weight = 0;
-            foreach(var i in individum.Distinct().ToArray())
-            {
-                for (int j = 0; j < coverageMatrix.GetLength(1); j++)
-                    weight += coverageMatrix[i, j];
-            }
-            return weight;
         }
     }
 }

@@ -46,7 +46,60 @@ namespace minknf
             knf = new KNF(implicants);
         }
 
-        public String MinimizeKnf(int epochs = 10_000, int populationSize = 100, double mutationChance = 1, double crossoverChance = 1)
+        public String MinimizeKnfGA(int epochs = 10_000, int populationSize = 100, double mutationChance = 1, double crossoverChance = 1)
+        {
+            if (!sknf.Contains('0'))
+                return "мкнф не существует";
+            else if (!sknf.Contains('1'))
+                return "0";
+
+            int[,] implicantMatrix = Consume();
+
+            List<int> coreImplicants = GetCoreImplicantsIndexesInMatrix(implicantMatrix);
+
+            int[,] matrixWithoutCore = MatrixCore(implicantMatrix, coreImplicants);
+
+            List<int> indexesInMatrixWithoutCore = Enumerable.Range(0, implicantMatrix.GetLength(0)).ToList();
+            indexesInMatrixWithoutCore = indexesInMatrixWithoutCore.Except(coreImplicants).ToList();
+            coreImplicants = coreImplicants.Distinct().ToList();
+
+            GA ga = new GA(matrixWithoutCore, epochs, populationSize, mutationChance, crossoverChance, indexesInMatrixWithoutCore);
+            List<int> best = ga.GO();
+
+            List<DisjunctiveMonomial> ans = new List<DisjunctiveMonomial>();
+            foreach (var i in coreImplicants)
+                ans.Add(monomials[i]);
+            if (best != null)
+                foreach (var i in best)
+                    ans.Add(monomials[i]);
+            this.monomials = ans;
+            return this.ToString();
+        }
+        public int[,] Consume()
+        {
+            List<DisjunctiveMonomial> startingMonomials = new List<DisjunctiveMonomial>(monomials);
+            List<DisjunctiveMonomial> consRes = this.ConsumeMonomials(this.monomials);
+
+
+            consRes = consRes.Distinct(new DisjunctiveMonomialEqualityComparer()).ToList();
+
+
+
+            int[,] implicantMatrix = new int[consRes.Count, startingMonomials.Count];
+
+            for (int i = 0; i < consRes.Count; i++)
+            {
+                for (int j = 0; j < startingMonomials.Count; j++)
+                {
+                    implicantMatrix[i, j] = (consRes[i].DoesCover(startingMonomials[j]) ? 1 : 0);
+                }
+            }
+
+            this.setMonomials(consRes);
+
+            return implicantMatrix;
+        }
+        public String MinimizeKNFAnnealing()
         {
             if (!sknf.Contains('0'))
                 return "мкнф не существует";
@@ -63,7 +116,7 @@ namespace minknf
 
             int[,] implicantMatrix = new int[consRes.Count, startingMonomials.Count];
 
-            for(int i = 0; i < consRes.Count; i++)
+            for (int i = 0; i < consRes.Count; i++)
             {
                 for (int j = 0; j < startingMonomials.Count; j++)
                 {
@@ -83,19 +136,18 @@ namespace minknf
             indexesInMatrixWithoutCore = indexesInMatrixWithoutCore.Except(coreImplicants).ToList();
             coreImplicants = coreImplicants.Distinct().ToList();
 
-            //Matrix.CoutMatr(matrixWithoutCore);
+            //GA ga = new GA(matrixWithoutCore, epochs, populationSize, mutationChance, crossoverChance, indexesInMatrixWithoutCore);
+            //List<int> best = ga.GO();
 
-            GA ga = new GA(matrixWithoutCore, epochs, populationSize, mutationChance, crossoverChance, indexesInMatrixWithoutCore);
-            List<int> best = ga.GO();
-
-            List<DisjunctiveMonomial> ans = new List<DisjunctiveMonomial>();
-            foreach (var i in coreImplicants)
-                ans.Add(monomials[i]);
-            if (best != null)
-                foreach (var i in best)
-                    ans.Add(monomials[i]);
-            this.monomials = ans;
-            return this.ToString();
+            //List<DisjunctiveMonomial> ans = new List<DisjunctiveMonomial>();
+            //foreach (var i in coreImplicants)
+            //    ans.Add(monomials[i]);
+            //if (best != null)
+            //    foreach (var i in best)
+            //        ans.Add(monomials[i]);
+            //this.monomials = ans;
+            //return this.ToString();
+            return "123";
         }
         private void setMonomials(List<DisjunctiveMonomial> toSet)
         {
