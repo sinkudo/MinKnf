@@ -12,31 +12,20 @@ namespace minknf
         private double crossoverChance;
         private int populationSize;
         PopulationMatrix populationmatrix;
-        public GA(int[,] matrix, int epochs, int populationSize, double mutationChance, double crossoverChance, List<int> geneIndexes)
+        public GA(int[,] matrix, int epochs, int populationSize, double mutationChance, double crossoverChance, List<int> geneIndexes) : base(matrix, geneIndexes)
         {
             this.epochs = epochs;
             this.populationSize = populationSize;
             this.mutationChance = mutationChance;
             this.crossoverChance = crossoverChance;
-            this.geneIndexes = geneIndexes;
-
-            coverageMatrix = matrix;
-            genePool = new List<int>[matrix.GetLength(1)];
-            for (int j = 0; j < matrix.GetLength(1); j++)
-            {
-                List<int> columnPool = new List<int>();
-                for (int i = 0; i < matrix.GetLength(0); i++)
-                    if (matrix[i, j] == 1)
-                        columnPool.Add(i);
-                genePool[j] = columnPool;
-
-            }
-            populationmatrix = new PopulationMatrix(populationSize, genePool.Count(), genePool);
+            //coverageMatrix = matrix;
+            //initPool();
+            populationmatrix = new PopulationMatrix(populationSize, pool.Count(), pool);
         }
 
         public List<int> GO()
         {
-            if (coverageMatrix.GetLength(0) == 0)
+            if (coverageMatrix.GetLength(0) == 0 || coverageMatrix.GetLength(1) == 0)
                 return null;
             Console.WriteLine("genetic go");
             for (int i = 0; i < epochs; i++)
@@ -92,17 +81,15 @@ namespace minknf
         private void MutationOperation(int[] child)
         {
             int mutationPoint = random.Next(0, child.Length);
-            int ind = random.Next(0, genePool[mutationPoint].Count());
-            while (genePool[mutationPoint][ind] == child[mutationPoint] && genePool[mutationPoint].Count() > 1)
+            int ind = random.Next(0, pool[mutationPoint].Count());
+            while (pool[mutationPoint][ind] == child[mutationPoint] && pool[mutationPoint].Count() > 1)
             {
-                //for(int i = 0; i < genePool)
-                ind = random.Next(0, genePool[mutationPoint].Count());
+                ind = random.Next(0, pool[mutationPoint].Count());
             }
-            child[mutationPoint] = genePool[mutationPoint][ind];
+            child[mutationPoint] = pool[mutationPoint][ind];
         }
         private void ReplaceRandomIndividum(int[] child)
         {
-            //Console.WriteLine("replace");
             int individumToReplace = random.Next(0, populationmatrix.GetRows());
             int[] individum = new int[child.Length];
             for(int j = 0; j < populationmatrix.GetColumns(); j++)
@@ -129,11 +116,11 @@ namespace minknf
                     best = current;
 
             }
+
             List<int> ans = new List<int>();
-            
             foreach(var i in best.Distinct().ToList())
             {
-                ans.Add(geneIndexes[i]);
+                ans.Add(absoluteIndexes[i]);
             }
             
             return ans;

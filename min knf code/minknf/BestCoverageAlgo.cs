@@ -8,8 +8,8 @@ namespace minknf
     class BestCoverageAlgo
     {
         protected int[,] coverageMatrix;
-        protected private List<int>[] genePool;
-        protected private List<int> geneIndexes;
+        protected private List<int>[] pool;
+        protected private List<int> absoluteIndexes;
         protected Random random = new Random();
         protected bool CompareFitness(int[] possibleReplace, int[] currentIndividum)
         {
@@ -17,6 +17,12 @@ namespace minknf
             int replaceCount = possibleReplace.Distinct().Count();
             int curCount = currentIndividum.Distinct().Count();
             return (replaceCount < curCount) || (replaceCount == curCount && WeightOfIndividum(possibleReplace) > WeightOfIndividum(currentIndividum));
+        }
+        protected BestCoverageAlgo(int[,] matrix, List<int> absoluteIndexes)
+        {
+            coverageMatrix = matrix;
+            this.absoluteIndexes = absoluteIndexes;
+            initPool();
         }
         private int WeightOfIndividum(int[] individum)
         {
@@ -27,6 +33,19 @@ namespace minknf
                     weight += coverageMatrix[i, j];
             }
             return weight;
+        }
+        protected void initPool()
+        {
+            pool = new List<int>[coverageMatrix.GetLength(1)];
+            for (int j = 0; j < coverageMatrix.GetLength(1); j++)
+            {
+                List<int> columnPool = new List<int>();
+                for (int i = 0; i < coverageMatrix.GetLength(0); i++)
+                    if (coverageMatrix[i, j] == 1)
+                        columnPool.Add(i);
+                pool[j] = columnPool;
+
+            }
         }
     }
 

@@ -23,15 +23,6 @@ namespace minknf
                 monomials.Add(new DisjunctiveMonomial(binval));
             }
         }
-        //public KNF(String knf)
-        //{
-        //    knf = knf.Replace("(", String.Empty);
-        //    knf = knf.Replace(")", String.Empty);
-        //    string[] strmonomials = knf.Split('&');
-        //    foreach (var monomial in strmonomials)
-        //        monomials.Add(new DisjunctiveMonomial(monomial));
-
-        //}
         public KNF(List<DisjunctiveMonomial> other)
         {
             monomials = new List<DisjunctiveMonomial>(other);
@@ -62,6 +53,7 @@ namespace minknf
             List<int> indexesInMatrixWithoutCore = Enumerable.Range(0, implicantMatrix.GetLength(0)).ToList();
             indexesInMatrixWithoutCore = indexesInMatrixWithoutCore.Except(coreImplicants).ToList();
             coreImplicants = coreImplicants.Distinct().ToList();
+
 
             GA ga = new GA(matrixWithoutCore, epochs, populationSize, mutationChance, crossoverChance, indexesInMatrixWithoutCore);
             List<int> best = ga.GO();
@@ -113,6 +105,7 @@ namespace minknf
             consRes = consRes.Distinct(new DisjunctiveMonomialEqualityComparer()).ToList();
 
 
+        
 
             int[,] implicantMatrix = new int[consRes.Count, startingMonomials.Count];
 
@@ -134,9 +127,18 @@ namespace minknf
 
             List<int> indexesInMatrixWithoutCore = Enumerable.Range(0, implicantMatrix.GetLength(0)).ToList();
             indexesInMatrixWithoutCore = indexesInMatrixWithoutCore.Except(coreImplicants).ToList();
+
+            List<DisjunctiveMonomial> monomialsForAnnealing = new List<DisjunctiveMonomial>();
+            foreach(var i in indexesInMatrixWithoutCore)
+            {
+                monomialsForAnnealing.Add(this.monomials[i]);
+            }
+
             coreImplicants = coreImplicants.Distinct().ToList();
 
             //GA ga = new GA(matrixWithoutCore, epochs, populationSize, mutationChance, crossoverChance, indexesInMatrixWithoutCore);
+            Annealing annealing = new Annealing(matrixWithoutCore, indexesInMatrixWithoutCore, monomialsForAnnealing);
+
             //List<int> best = ga.GO();
 
             //List<DisjunctiveMonomial> ans = new List<DisjunctiveMonomial>();

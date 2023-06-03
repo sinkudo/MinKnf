@@ -58,14 +58,14 @@ namespace minknf
         }
         public DisjunctiveMonomial(DisjunctiveMonomial other)
         {
-            this.vars = new int[other.GetSize()];
+            this.vars = new int[other.GetArraySize()];
             other.vars.CopyTo(this.vars, 0);
         }
 
         public int Distance(DisjunctiveMonomial other)
         {
             int dist = 0;
-            for(int i = 0; i < this.GetSize(); i++)
+            for(int i = 0; i < this.GetArraySize(); i++)
             {
                 dist += (this[i] == other[i] ? 0 : 1);
             }
@@ -78,7 +78,7 @@ namespace minknf
                 throw new Exception("Нельзя полготить");
 
             DisjunctiveMonomial newMonomial = new DisjunctiveMonomial(this);
-            for (int i = 0; i < this.GetSize(); i++)
+            for (int i = 0; i < this.GetArraySize(); i++)
                 if (this[i] != other[i] && this[i] != 2)
                 {
                     newMonomial[i] = 2;
@@ -88,10 +88,10 @@ namespace minknf
         }
         public bool DoesCover(DisjunctiveMonomial other)
         {
-            if (this.GetSize() != other.GetSize())
+            if (this.GetArraySize() != other.GetArraySize())
                 throw new Exception("Разные размеры");
 
-            for(int i = 0; i < this.GetSize(); i++)
+            for(int i = 0; i < this.GetArraySize(); i++)
             {
                 if (this[i] != other[i] && this[i] != 2 && other[i] != 2)
                     return false;
@@ -102,11 +102,14 @@ namespace minknf
         {
             return vars;
         }
-        public int GetSize()
+        public int GetArraySize()
         {
             return vars.Length;
         }
-
+        public int GetSize()
+        {
+            return vars.Count(i => i != 2);
+        }
         public int this[int key]
         {
             get => vars[key];
