@@ -13,83 +13,89 @@ namespace minknf
         static void Main(string[] args)
         {
 
-            string currentDirectory = Environment.CurrentDirectory;
-            // read knf from file
-            string sknfFilePath = Path.Combine(currentDirectory, "sknf.txt");
-            String sknf = String.Empty;
-            try
-            {
-                sknf = File.ReadAllText(sknfFilePath);
-            }
-            catch
-            {
-                Console.WriteLine("Ошибка файла sknf.txt\nНажмите на любую кнопку");
-                Console.ReadKey();
-                System.Environment.Exit(1);
-            }
-            if (sknf == String.Empty)
-            {
-                Console.WriteLine("Файл sknf.txt пуст\nНажмите на любую кнопку");
-                Console.ReadKey();
-                System.Environment.Exit(1);
-            }
+            //string currentDirectory = Environment.CurrentDirectory;
+            //// read knf from file
+            //string sknfFilePath = Path.Combine(currentDirectory, "sknf.txt");
+            //String sknf = String.Empty;
+            //try
+            //{
+            //    sknf = File.ReadAllText(sknfFilePath);
+            //}
+            //catch
+            //{
+            //    Console.WriteLine("Ошибка файла sknf.txt\nНажмите на любую кнопку");
+            //    Console.ReadKey();
+            //    System.Environment.Exit(1);
+            //}
+            //if (sknf == String.Empty)
+            //{
+            //    Console.WriteLine("Файл sknf.txt пуст\nНажмите на любую кнопку");
+            //    Console.ReadKey();
+            //    System.Environment.Exit(1);
+            //}
 
-            // read params
-            string paramsFilePath = Path.Combine(currentDirectory, "params.txt");
-            Dictionary<string, string> data = new Dictionary<string, string>();
-            data = FileParser.Parse(paramsFilePath);
-            if (data == null)
-            {
-                Console.WriteLine("Ошибка файла params.txt\nФайл отсутствует, либо пуст. Нажмите на любую кнопку");
-                Console.ReadKey();
-                System.Environment.Exit(1);
-            }
+            //// read params
+            //string paramsFilePath = Path.Combine(currentDirectory, "params.txt");
+            //Dictionary<string, string> data = new Dictionary<string, string>();
+            //data = FileParser.Parse(paramsFilePath);
+            //if (data == null)
+            //{
+            //    Console.WriteLine("Ошибка файла params.txt\nФайл отсутствует, либо пуст. Нажмите на любую кнопку");
+            //    Console.ReadKey();
+            //    System.Environment.Exit(1);
+            //}
 
-            int epochs = int.Parse(data["epochs"]);
-            int populationSize = int.Parse(data["populationSize"]);
-            double mutationChance = double.Parse(data["mutationChance"]);
-            double crossoverChance = double.Parse(data["crossoverChance"]);
+            //int epochs = int.Parse(data["epochs"]);
+            //int populationSize = int.Parse(data["populationSize"]);
+            //double mutationChance = double.Parse(data["mutationChance"]);
+            //double crossoverChance = double.Parse(data["crossoverChance"]);
 
-            String outFilePath = Path.Combine(currentDirectory, "out.txt");
+            //String outFilePath = Path.Combine(currentDirectory, "out.txt");
 
-            if (ValidateVector(sknf))
-            {
-                Console.WriteLine("Начало работы алгоритма...");
-                KNF knf = new KNF(sknf);
+            //if (ValidateVector(sknf))
+            //{
+            //    Console.WriteLine("Начало работы алгоритма...");
+            //    KNF knf = new KNF(sknf);
 
-                knf.MinimizeKnf(epochs, populationSize, mutationChance, crossoverChance);
-                try
-                {
-                    
-                    if (knf.ToString() != String.Empty)
-                    {
-                        if (!sknf.Contains('1'))
-                        {
-                            File.WriteAllText(outFilePath, "0");
-                        }
-                        else
-                        {
-                            File.WriteAllText(outFilePath, knf.ToString());
-                        }
-                    }
-                    else
-                    {
-                        File.WriteAllText(outFilePath, "мнкф не существует");
-                    }
-                    Console.WriteLine("Успешная запись в файл.\nНажмите на любую кнопку");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Произошла ошибка при записи в файл: " + ex.Message);
-                    Console.WriteLine("Произошла ошибка при записи в файл");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Неверный формат строки. Нажмите любую клавишу");
-                File.WriteAllText(outFilePath, "Неверный формат строки!!!");
-            }
-            Console.ReadKey();
+            //    knf.MinimizeKnf(epochs, populationSize, mutationChance, crossoverChance);
+            //    try
+            //    {
+
+            //        if (knf.ToString() != String.Empty)
+            //        {
+            //            if (!sknf.Contains('1'))
+            //            {
+            //                File.WriteAllText(outFilePath, "0");
+            //            }
+            //            else
+            //            {
+            //                File.WriteAllText(outFilePath, knf.ToString());
+            //            }
+            //        }
+            //        else
+            //        {
+            //            File.WriteAllText(outFilePath, "мнкф не существует");
+            //        }
+            //        Console.WriteLine("Успешная запись в файл.\nНажмите на любую кнопку");
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        Console.WriteLine("Произошла ошибка при записи в файл: " + ex.Message);
+            //        Console.WriteLine("Произошла ошибка при записи в файл");
+            //    }
+            //}
+            //else
+            //{
+            //    Console.WriteLine("Неверный формат строки. Нажмите любую клавишу");
+            //    File.WriteAllText(outFilePath, "Неверный формат строки!!!");
+            //}
+            //Console.ReadKey();
+
+
+
+            KNF knf = new KNF("1111111111110111101101111111011101110111110101111101011111111111");
+            Console.WriteLine(knf.MinimizeKNFAnnealing());
+            //Console.WriteLine(knf.MinimizeKnfGA());
 
 
 
