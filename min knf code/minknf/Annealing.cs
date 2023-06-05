@@ -15,7 +15,6 @@ namespace minknf
         public Annealing(int[,] matrix, List<int> absoluteIndexes, List<DisjunctiveMonomial> monomials): base(matrix, absoluteIndexes)
         {
             this.monomials = monomials;
-
             //suda smotri item1 = geneindexes, item2 = monomials
             //foreach (var i in absoluteIndexes.Zip(monomials, Tuple.Create))
             //{
@@ -92,8 +91,8 @@ namespace minknf
                 PrintBrucock("Itog brusok: ", currentBrucock);
                 Console.WriteLine("Itog Size: " + GetBrucockSize(currentBrucock));
                 Console.WriteLine("---");
-                //currentT -= 1;
-                currentT *= 0.5;
+                currentT -= 0.1;
+                //currentT *= 0.5;
                 // 0.5 * (T_i / T0)
             }
         }
@@ -101,35 +100,43 @@ namespace minknf
         private List<int> ChangeBrucock(List<int> brucock)
         {
             List<int> newBrucock = new List<int>(brucock);
-            int count = (int)(0.5 * (currentT / T) * brucock.Count);
+           
+            //int count = (int)(0.5 * (currentT / T) * brucock.Count);
+            int count = (int)Math.Ceiling((0.5 * (currentT / T) * brucock.Count));
 
-
-            List<int> tmp = newBrucock.OrderBy(x => random.Next()).Take(count).ToList();
+            Console.WriteLine("count " +count);
+            List<int> tmp = Enumerable.Range(0, brucock.Count).OrderBy(x => random.Next()).Take(count).ToList();
+            PrintBrucock("brucock ", newBrucock);
             PrintBrucock("tmp is ", tmp);
 
-            for (int i = 0; i < brucock.Count; i++)
+
+
+            //for (int i = 0; i < count; i++)
+            //{
+            //    // пикаем рнд эл из бруска
+            //    int brucockIndex = random.Next(0, brucock.Count);
+
+            //    //Console.WriteLine("Индекс элемента, который изменится: " + brucockIndex);
+            //    int currentEl = brucock[brucockIndex];
+            //    //Console.WriteLine("Элемент бруска: " + currentEl);
+
+            //    // формируем список кандидат для поиска нового эла для бруска
+            //    List<int> candidates = new List<int>(pool[brucockIndex]);
+            //    //PrintBrucock("Кандидаты: ", candidates);
+            //    // чтобы второй раз не пикнуть этот же эл
+            //    candidates.Remove(currentEl);
+            //    //PrintBrucock("Кандидаты после очищения: ", candidates);
+
+            //    int candidateIndex = random.Next(0, candidates.Count);
+            //    newBrucock[brucockIndex] = candidates[candidateIndex];
+            //}
+            foreach (var i in tmp)
             {
-
-            }
-            
-            for (int i = 0; i < count; i++)
-            {
-                // пикаем рнд эл из бруска
-                int brucockIndex = random.Next(0, brucock.Count);
-
-                //Console.WriteLine("Индекс элемента, который изменится: " + brucockIndex);
-                int currentEl = brucock[brucockIndex];
-                //Console.WriteLine("Элемент бруска: " + currentEl);
-
-                // формируем список кандидат для поиска нового эла для бруска
-                List<int> candidates = new List<int>(pool[brucockIndex]);
-                //PrintBrucock("Кандидаты: ", candidates);
-                // чтобы второй раз не пикнуть этот же эл
+                List<int> candidates = new List<int>(pool[i]);
+                int currentEl = brucock[i];
                 candidates.Remove(currentEl);
-                //PrintBrucock("Кандидаты после очищения: ", candidates);
-
                 int candidateIndex = random.Next(0, candidates.Count);
-                newBrucock[brucockIndex] = candidates[candidateIndex];
+                newBrucock[i] = candidates[candidateIndex];
             }
             return newBrucock;
         }

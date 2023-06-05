@@ -138,7 +138,7 @@ namespace minknf
 
             //GA ga = new GA(matrixWithoutCore, epochs, populationSize, mutationChance, crossoverChance, indexesInMatrixWithoutCore);
             Annealing annealing = new Annealing(matrixWithoutCore, indexesInMatrixWithoutCore, monomialsForAnnealing);
-
+            annealing.Anneal();
             //List<int> best = ga.GO();
 
             //List<DisjunctiveMonomial> ans = new List<DisjunctiveMonomial>();
@@ -149,7 +149,7 @@ namespace minknf
             //        ans.Add(monomials[i]);
             //this.monomials = ans;
             //return this.ToString();
-            return "123";
+            return "qq";
         }
         private void setMonomials(List<DisjunctiveMonomial> toSet)
         {
