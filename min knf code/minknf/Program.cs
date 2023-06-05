@@ -92,10 +92,17 @@ namespace minknf
             //Console.ReadKey();
 
 
-
-            KNF knf = new KNF("1111111111110111101101111111011101110111110101111101011111111111");
-            //Console.WriteLine(knf.MinimizeKNFAnnealing());
-            Console.WriteLine(knf.MinimizeKNFAnnealing());
+            string currentDirectory = Environment.CurrentDirectory;
+            string vectorFilePath = Path.Combine(currentDirectory, "vector.txt");
+            string resFilePath = Path.Combine(currentDirectory, "res.txt");
+            String vector = String.Empty;
+            vector = File.ReadAllText(vectorFilePath);
+            String dataFilePath = Path.Combine(currentDirectory, "data.txt");
+            KNF knf = new KNF(vector);
+            String res = knf.MinimizeKNFAnnealing();
+            File.WriteAllText(resFilePath, res);
+            Console.ReadKey();
+            //KNF knf = new KNF("10011100011100111110000000001100111110011101110111100101000011101011110000100000001111101000101001110011100001111000100100100100");
             //Console.WriteLine(knf.MinimizeKnfGA());
 
 
