@@ -12,47 +12,17 @@ namespace minknf
         List<DisjunctiveMonomial> monomials;
         double T = 100;
         double currentT = 100;
+        List<int> canditateInds = new List<int>();
         public Annealing(int[,] matrix, List<int> absoluteIndexes, List<DisjunctiveMonomial> monomials): base(matrix, absoluteIndexes)
         {
             this.monomials = monomials;
-            //suda smotri item1 = geneindexes, item2 = monomials
-            //foreach (var i in absoluteIndexes.Zip(monomials, Tuple.Create))
-            //{
-            //    Console.WriteLine(i.Item1 + " " + i.Item2.ToString() + " " + i.Item2.GetSize());
-            //}
-
-            //Matrix.CoutMatr(matrix);
-
-            //1. рандомно генерим брусок
-            //2. тип получаем мономиалы, сайз
-            //3. генерим рандомно измененный брусок
-            //4. получаем сайз нового бруска
-            //5. сравниваем, если сайз стал меньше -- берем его за основной.
-            //    если сайз стал больше, то e ^ (-SIZE_DIFF / T)
-            //6. с этой вероятностью меняем брусок.
-            //на всем пути темпа падает
-
-            //foreach (var i in this.pool) {
-            //    foreach (var j in i)
-            //    {
-            //        Console.Write(j);
-            //    }
-            //    Console.WriteLine();
-
-            //}
-
-            //sum = 0;
-            //foreach (var i in brusok)
-            //{
-            //    sum += monomials[i].GetSize();
-            //}
-            //...
+            for(int i = 0; i < pool.Length; i++)
+            {
+                if (pool[i].Count > 1)
+                    canditateInds.Add(i);
+            }
         }
-        //public List<int> GO()
-        //{
-        //    //...
-        //}
-        public void Anneal()
+        public List<int> Anneal()
         {
             // Brucock (брусок) - это list рандомных значений из pool
             // atom - эл бруска 
@@ -95,6 +65,7 @@ namespace minknf
                 //currentT *= 0.5;
                 // 0.5 * (T_i / T0)
             }
+            return ToAbsolute(currentBrucock);
         }
 
         private List<int> ChangeBrucock(List<int> brucock)
@@ -105,31 +76,15 @@ namespace minknf
             int count = (int)Math.Ceiling((0.5 * (currentT / T) * brucock.Count));
 
             Console.WriteLine("count " +count);
-            List<int> tmp = Enumerable.Range(0, brucock.Count).OrderBy(x => random.Next()).Take(count).ToList();
+
+            //List<int> tmp = Enumerable.Range(0, brucock.Count).OrderBy(x => random.Next()).Take(count).ToList();
+            List<int> tmp = new List<int>();
+            if (count >= canditateInds.Count)
+                tmp = canditateInds;
+            else
+                tmp = canditateInds.OrderBy(x => random.Next()).Take(count).ToList();
             PrintBrucock("brucock ", newBrucock);
             PrintBrucock("tmp is ", tmp);
-
-
-
-            //for (int i = 0; i < count; i++)
-            //{
-            //    // пикаем рнд эл из бруска
-            //    int brucockIndex = random.Next(0, brucock.Count);
-
-            //    //Console.WriteLine("Индекс элемента, который изменится: " + brucockIndex);
-            //    int currentEl = brucock[brucockIndex];
-            //    //Console.WriteLine("Элемент бруска: " + currentEl);
-
-            //    // формируем список кандидат для поиска нового эла для бруска
-            //    List<int> candidates = new List<int>(pool[brucockIndex]);
-            //    //PrintBrucock("Кандидаты: ", candidates);
-            //    // чтобы второй раз не пикнуть этот же эл
-            //    candidates.Remove(currentEl);
-            //    //PrintBrucock("Кандидаты после очищения: ", candidates);
-
-            //    int candidateIndex = random.Next(0, candidates.Count);
-            //    newBrucock[brucockIndex] = candidates[candidateIndex];
-            //}
             foreach (var i in tmp)
             {
                 List<int> candidates = new List<int>(pool[i]);
@@ -173,6 +128,15 @@ namespace minknf
             }
             return size;
         }
-
+        private List<int> ToAbsolute(List<int> brusok)
+        {
+            List<int> ans = new List<int>();
+            foreach (var i in brusok.Distinct().ToList())
+            {
+                ans.Add(absoluteIndexes[i]);
+            }
+            //PrintBrucock("", ans);
+            return ans;
+        }
     }
 }

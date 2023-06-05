@@ -95,7 +95,7 @@ namespace minknf
 
             KNF knf = new KNF("1111111111110111101101111111011101110111110101111101011111111111");
             //Console.WriteLine(knf.MinimizeKNFAnnealing());
-            knf.MinimizeKNFAnnealing();
+            Console.WriteLine(knf.MinimizeKNFAnnealing());
             //Console.WriteLine(knf.MinimizeKnfGA());
 
 
