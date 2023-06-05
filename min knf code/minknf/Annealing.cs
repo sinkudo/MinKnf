@@ -25,7 +25,8 @@ namespace minknf
         public List<int> Anneal()
         {
             // Brucock (брусок) - это list рандомных значений из pool
-            // atom - эл бруска 
+            // atom - эл бруска
+            List<int> sizes = new List<int>();
             List<int> currentBrucock = CreateBrucock(pool);
             PrintBrucock("Брусок: ", currentBrucock);
             int currentSize = GetBrucockSize(currentBrucock);
@@ -63,10 +64,11 @@ namespace minknf
                 }
                 //PrintBrucock("Itog brusok: ", currentBrucock);
                 //Console.WriteLine("Itog Size: " + GetBrucockSize(currentBrucock));
+                sizes.Add(BrusockEnergy);
                 //Console.WriteLine("---");
                 //currentT -= 0.1;
                 currentT = T / Math.Log10(1 + i++);
-                Console.WriteLine(currentT);
+                //Console.WriteLine(currentT);  !!!!!!!!!!!!!
                 //currentT *= 0.5;
                 // 0.5 * (T_i / T0)
             }
@@ -109,6 +111,9 @@ namespace minknf
             //    // 0.5 * (T_i / T0)
             //}
             PrintBrucock("", currentBrucock);
+            //PrintBrucock("", sizes);
+            FileWorker.SaveData(sizes);
+
             return ToAbsolute(currentBrucock);
         }
 
