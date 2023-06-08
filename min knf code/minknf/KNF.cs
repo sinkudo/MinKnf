@@ -91,7 +91,7 @@ namespace minknf
 
             return implicantMatrix;
         }
-        public String MinimizeKNFAnnealing()
+        public String MinimizeKNFAnnealing(double T = 10_000.0, double minT = 20.0, int function = 1, int C = 2, int repeats = 10_000)
         {
             if (!sknf.Contains('0'))
                 return "мкнф не существует";
@@ -139,7 +139,7 @@ namespace minknf
             //GA ga = new GA(matrixWithoutCore, epochs, populationSize, mutationChance, crossoverChance, indexesInMatrixWithoutCore);
             Annealing annealing = new Annealing(matrixWithoutCore, indexesInMatrixWithoutCore, monomialsForAnnealing);
             //annealing.Anneal();
-            List<int> best = annealing.Anneal();
+            List<int> best = annealing.Anneal(T, minT, function, C, repeats);
 
             List<DisjunctiveMonomial> ans = new List<DisjunctiveMonomial>();
             foreach (var i in coreImplicants)

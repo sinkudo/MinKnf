@@ -22,10 +22,8 @@ namespace minknf
                     canditateInds.Add(i);
             }
         }
-        public List<int> Anneal()
+        public List<int> Anneal(double T, double minT, int function, int C, int repeats)
         {
-            // Brucock (брусок) - это list рандомных значений из pool
-            // atom - эл бруска
             List<int> sizes = new List<int>();
             List<int> currentBrucock = CreateBrucock(pool);
             PrintBrucock("Брусок: ", currentBrucock);
@@ -33,85 +31,43 @@ namespace minknf
             Console.WriteLine("Size: " + currentSize);
             Console.WriteLine("---");
             int i = 0;
-            while (currentT > 20)
+            double curT = T;
+            while (curT > minT)
             {
                 List<int> newBrucock = ChangeBrucock(currentBrucock);
-                //PrintBrucock("кандидат брусок: ", newBrucock);
                 int newBrucockSize = GetBrucockSize(newBrucock);
-                //Console.WriteLine("New Brusok Size: " + newBrucockSize);
-                // функция энергии
-                //int sizeDiffence = newBrucockSize - GetBrucockSize(currentBrucock);
                 int newBrusockEnergy = newBrucock.Distinct().Count() * 100 + GetBrucockSize(newBrucock);
                 int BrusockEnergy = currentBrucock.Distinct().Count() * 100 + GetBrucockSize(currentBrucock);
                 int sizeDifference = newBrusockEnergy - BrusockEnergy;
-                //Console.WriteLine(sizeDifference);
                 if (sizeDifference <= 0)
                 {
                     currentBrucock = newBrucock;
-                    //PrintBrucock("size<=0, current brusok = ", currentBrucock);
                 }
                 else
                 {
-                    //Console.WriteLine("size>0");
                     double polikarpia = Math.Exp(-sizeDifference / currentT);
                     double p = random.NextDouble();
-                    //Console.WriteLine(polikarpia + ", " + p);
-
                     if (polikarpia > p)
                     {
                         currentBrucock = newBrucock;
                     }
                 }
-                //PrintBrucock("Itog brusok: ", currentBrucock);
-                //Console.WriteLine("Itog Size: " + GetBrucockSize(currentBrucock));
                 sizes.Add(BrusockEnergy);
-                //Console.WriteLine("---");
-                //currentT -= 0.1;
-                currentT = T / Math.Log10(1 + i++);
-                //Console.WriteLine(currentT);  !!!!!!!!!!!!!
-                //currentT *= 0.5;
-                // 0.5 * (T_i / T0)
+                switch (function)
+                {
+                    case 1:
+                        curT = T / Math.Log10(1 + i++);
+                        break;
+                    case 2:
+                        //
+                        break;
+                    case 3:
+                        //
+                        break;
+                }    
             }
-            //while (i++ < 10_000)
-            //{
-            //    List<int> newBrucock = ChangeBrucock(currentBrucock);
-            //    PrintBrucock("кандидат брусок: ", newBrucock);
-            //    int newBrucockSize = GetBrucockSize(newBrucock);
-            //    Console.WriteLine("New Brusok Size: " + newBrucockSize);
-            //    // функция энергии
-            //    //int sizeDiffence = newBrucockSize - GetBrucockSize(currentBrucock);
-            //    int newBrusockEnergy = newBrucock.Distinct().Count() * 100 + GetBrucockSize(newBrucock);
-            //    int BrusockEnergy = currentBrucock.Distinct().Count() * 100 + GetBrucockSize(currentBrucock);
-            //    int sizeDifference = newBrusockEnergy - BrusockEnergy;
-            //    Console.WriteLine(sizeDifference);
-            //    if (sizeDifference <= 0)
-            //    {
-            //        currentBrucock = newBrucock;
-            //        PrintBrucock("size<=0, current brusok = ", currentBrucock);
-            //    }
-            //    else
-            //    {
-            //        Console.WriteLine("size>0");
-            //        double polikarpia = Math.Exp(-sizeDifference / currentT);
-            //        double p = random.NextDouble();
-            //        Console.WriteLine(polikarpia + ", " + p);
-
-            //        if (polikarpia > p)
-            //        {
-            //            currentBrucock = newBrucock;
-            //        }
-            //    }
-            //    PrintBrucock("Itog brusok: ", currentBrucock);
-            //    Console.WriteLine("Itog Size: " + GetBrucockSize(currentBrucock));
-            //    Console.WriteLine("---");
-            //    //currentT -= 0.1;
-            //    currentT = T / Math.Log10(1 + i++);
-
-            //    //currentT *= 0.5;
-            //    // 0.5 * (T_i / T0)
-            //}
+            
             PrintBrucock("", currentBrucock);
-            //PrintBrucock("", sizes);
             FileWorker.SaveData(sizes);
 
             return ToAbsolute(currentBrucock);
