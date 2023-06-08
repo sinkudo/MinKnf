@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
+using System.Reflection.PortableExecutable;
 using System.Text.RegularExpressions;
 
 
@@ -94,16 +95,91 @@ namespace minknf
 
             string currentDirectory = Environment.CurrentDirectory;
             string vectorFilePath = Path.Combine(currentDirectory, "vector.txt");
-            string resFilePath = Path.Combine(currentDirectory, "res.txt");
             String vector = String.Empty;
-            vector = File.ReadAllText(vectorFilePath);
-            String dataFilePath = Path.Combine(currentDirectory, "data.txt");
-            KNF knf = new KNF(vector);
-            String res = knf.MinimizeKNFAnnealing();
-            File.WriteAllText(resFilePath, res);
-            Console.ReadKey();
+            try
+            {
+                vector = File.ReadAllText(vectorFilePath);
+            }
+            catch
+            {
+                Console.WriteLine("Ошибка файла vector.txt\nНажмите на любую кнопку");
+                Console.ReadKey();
+                System.Environment.Exit(1);
+            }
+            if (vector == String.Empty)
+            {
+                Console.WriteLine("Файл vector.txt пуст\nНажмите на любую кнопку");
+                Console.ReadKey();
+                System.Environment.Exit(1);
+            }
+
+
+            // read params
+            string paramsFilePath = Path.Combine(currentDirectory, "params.txt");
+            Dictionary<string, string> parameters = FileWorker.ReadParameterFile(paramsFilePath);
+            string minimalTemperature = parameters["Минимальная температура"];
+            string maximumTemperature = parameters["Максимальная температура"];
+            string temperatureChangeFunction = parameters["Функция изменения температуры (1-3)"];
+            string constantInSuperFast = parameters["Константа в сверхбыстром"];
+            string numberOfRepetitions = parameters["Количество повторений"];
+
+            Console.WriteLine("Minimal temperature: " + minimalTemperature);
+            Console.WriteLine("Maximum temperature: " + maximumTemperature);
+            Console.WriteLine("Temperature change function (1-3): " + temperatureChangeFunction);
+            Console.WriteLine("Constant in super fast: " + constantInSuperFast);
+            Console.WriteLine("Number of repetitions: " + numberOfRepetitions);
+
+
+            string resFilePath = Path.Combine(currentDirectory, "res.txt");
+            //KNF knf = new KNF(vector);
+            //String res = knf.MinimizeKNFAnnealing();
+            //File.WriteAllText(resFilePath, res);
+            //Console.ReadKey();
             //KNF knf = new KNF("10011100011100111110000000001100111110011101110111100101000011101011110000100000001111101000101001110011100001111000100100100100");
             //Console.WriteLine(knf.MinimizeKnfGA());
+
+
+
+            //String outFilePath = Path.Combine(currentDirectory, "out.txt");
+
+            //if (ValidateVector(sknf))
+            //{
+            //    Console.WriteLine("Начало работы алгоритма...");
+            //    KNF knf = new KNF(sknf);
+
+            //    knf.MinimizeKnf(epochs, populationSize, mutationChance, crossoverChance);
+            //    try
+            //    {
+
+            //        if (knf.ToString() != String.Empty)
+            //        {
+            //            if (!sknf.Contains('1'))
+            //            {
+            //                File.WriteAllText(outFilePath, "0");
+            //            }
+            //            else
+            //            {
+            //                File.WriteAllText(outFilePath, knf.ToString());
+            //            }
+            //        }
+            //        else
+            //        {
+            //            File.WriteAllText(outFilePath, "мнкф не существует");
+            //        }
+            //        Console.WriteLine("Успешная запись в файл.\nНажмите на любую кнопку");
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        Console.WriteLine("Произошла ошибка при записи в файл: " + ex.Message);
+            //        Console.WriteLine("Произошла ошибка при записи в файл");
+            //    }
+            //}
+            //else
+            //{
+            //    Console.WriteLine("Неверный формат строки. Нажмите любую клавишу");
+            //    File.WriteAllText(outFilePath, "Неверный формат строки!!!");
+            //}
+            //Console.ReadKey();
 
 
 
