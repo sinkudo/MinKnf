@@ -11,7 +11,7 @@ namespace minknf
     {
         List<DisjunctiveMonomial> monomials;
         double T = 100;
-        double currentT = 100;
+        double curT = 100;
         List<int> canditateInds = new List<int>();
         public Annealing(int[,] matrix, List<int> absoluteIndexes, List<DisjunctiveMonomial> monomials): base(matrix, absoluteIndexes)
         {
@@ -24,34 +24,56 @@ namespace minknf
         }
         public List<int> Anneal(double T, double minT, int function, int C, int repeats)
         {
-            List<int> sizes = new List<int>();
+            int mxmon = 0;
+            foreach (var mon in monomials)
+                mxmon = Math.Max(mon.GetSize(), mxmon);
+            List<double> sizes = new List<double>();
             List<int> currentBrucock = CreateBrucock(pool);
             PrintBrucock("Брусок: ", currentBrucock);
             int currentSize = GetBrucockSize(currentBrucock);
             Console.WriteLine("Size: " + currentSize);
             Console.WriteLine("---");
             int i = 0;
-            double curT = T;
+            curT = T;
+            double qqq = 1;
+            double www = 0;
             while (curT > minT)
             {
                 List<int> newBrucock = ChangeBrucock(currentBrucock);
                 int newBrucockSize = GetBrucockSize(newBrucock);
-                int newBrusockEnergy = newBrucock.Distinct().Count() * 100 + GetBrucockSize(newBrucock);
-                int BrusockEnergy = currentBrucock.Distinct().Count() * 100 + GetBrucockSize(currentBrucock);
-                int sizeDifference = newBrusockEnergy - BrusockEnergy;
+                //double newBrusockEnergy = (double)(newBrucock.Distinct().Count() * 10) / (double)(pool.Length * 10);
+                double newBrusockEnergy = (double)(newBrucock.Distinct().Count() * 10 + GetBrucockSize(newBrucock)) / (double)(pool.Length * 10 + mxmon * pool.Length);
+                //double BrusockEnergy = (double)(currentBrucock.Distinct().Count() * 10)/(double)(pool.Length * 10);
+                double BrusockEnergy = (double)(currentBrucock.Distinct().Count() * 10 + GetBrucockSize(currentBrucock))/(double)(pool.Length * 10 + mxmon * pool.Length);
+                double sizeDifference = (newBrusockEnergy - BrusockEnergy) * 1400;
+                //Console.WriteLine(sizeDifference);
+                //Console.WriteLine(pool.Length * 10);
+                //Console.WriteLine(sizeDifference + " " + newBrusockEnergy + " " + BrusockEnergy);
                 if (sizeDifference <= 0)
                 {
                     currentBrucock = newBrucock;
                 }
                 else
                 {
-                    double polikarpia = Math.Exp(-sizeDifference / currentT);
+                    double polikarpia = Math.Exp(-sizeDifference / curT);
+
+                    //double polikarpia = 1 / (1 + Math.Exp(sizeDifference / T));
+                    //Console.WriteLine(Math.Exp(-5 / curT));
+                    //Console.WriteLine(-sizeDifference);
+                    //if (-sizeDifference < -40)
+                    //    Console.WriteLine(-sizeDifference + " " + "123");
+                    //Console.WriteLine(polikarpia);
+                    //Console.WriteLine(polikarpia + " " + curT + " " + sizeDifference);
+                    //qqq = Math.Min(sizeDifference, qqq);
+                    //www = Math.Max(sizeDifference, www);
                     double p = random.NextDouble();
-                    if (polikarpia > p)
+                    
+                    //Console.WriteLine(sizeDifference +  " " + polikarpia + " " + p + " " + (polikarpia < p));
+                    if (p < polikarpia)
                     {
                         currentBrucock = newBrucock;
                     }
-                }
+                } 
                 sizes.Add(BrusockEnergy);
                 switch (function)
                 {
@@ -66,8 +88,9 @@ namespace minknf
                         break;
                 }    
             }
-            
-            PrintBrucock("", currentBrucock);
+            //Console.WriteLine(qqq + " " + www);
+
+            //PrintBrucock("", currentBrucock);
             FileWorker.SaveData(sizes);
 
             return ToAbsolute(currentBrucock);
@@ -78,7 +101,7 @@ namespace minknf
             List<int> newBrucock = new List<int>(brucock);
            
             //int count = (int)(0.5 * (currentT / T) * brucock.Count);
-            int count = (int)Math.Ceiling((0.5 * (currentT / T) * brucock.Count));
+            int count = (int)Math.Ceiling((0.5 * (curT / T) * brucock.Count));
 
             //Console.WriteLine("count " +count);
 
@@ -118,6 +141,7 @@ namespace minknf
         }
         private void PrintBrucock(string s, List<int> brucock)
         {
+            Console.WriteLine("123");
             string joinedList = String.Join(", ", brucock);
             Console.WriteLine(s + joinedList, brucock.Count);
         }

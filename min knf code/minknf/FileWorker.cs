@@ -7,7 +7,7 @@ namespace minknf
 {
     class FileWorker
     {
-        public static void SaveData(List<int> data)
+        public static void SaveData(List<double> data)
         {
             // Specify the file path
             string currentDirectory = Environment.CurrentDirectory;
@@ -36,7 +36,15 @@ namespace minknf
             // Write the numbers to the file
             File.WriteAllText(currentFile, dataString);
         }
+        //public static void SaveData(List<int> data)
+        //{
+        //    string currentDirectory = Environment.CurrentDirectory;
+        //    string dataFilePath = Path.Combine(currentDirectory, "data.txt");
 
+        //    string dataString = string.Join(Environment.NewLine, data);
+
+        //    File.WriteAllText(dataFilePath, dataString);
+        //}
         public static Dictionary<string, string> ReadParameterFile(string filePath)
         {
             Dictionary<string, string> parameters = new Dictionary<string, string>();
