@@ -11,13 +11,30 @@ namespace minknf
         {
             // Specify the file path
             string currentDirectory = Environment.CurrentDirectory;
-            string dataFilePath = Path.Combine(currentDirectory, "data.txt");
-
+            string currentFile = Path.Combine(currentDirectory, "current.txt");
+            string previousFile = Path.Combine(currentDirectory, "previous.txt");
+            string previousOld = Path.Combine(currentDirectory, "previousOld.txt");
+            if (!File.Exists(currentFile))
+                File.Create(currentFile).Close();
+            if (!File.Exists(previousFile))
+                File.Create(previousFile).Close();
+            if (File.Exists(previousOld))
+                File.Delete(previousOld);
+            try
+            {
+                System.IO.File.Move(previousFile, previousOld);
+                System.IO.File.Move(currentFile, previousFile);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            //string dataFilePath = Path.Combine(currentDirectory, "data.txt");
             // Convert the List<int> to a string representation
             string dataString = string.Join(Environment.NewLine, data);
 
             // Write the numbers to the file
-            File.WriteAllText(dataFilePath, dataString);
+            File.WriteAllText(currentFile, dataString);
         }
 
         public static Dictionary<string, string> ReadParameterFile(string filePath)
