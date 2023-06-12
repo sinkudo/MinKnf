@@ -45,7 +45,7 @@ namespace minknf
                 double newBrusockEnergy = (double)(newBrucock.Distinct().Count() * 10 + GetBrucockSize(newBrucock)) / (double)(pool.Length * 10 + mxmon * pool.Length);
                 //double BrusockEnergy = (double)(currentBrucock.Distinct().Count() * 10)/(double)(pool.Length * 10);
                 double BrusockEnergy = (double)(currentBrucock.Distinct().Count() * 10 + GetBrucockSize(currentBrucock))/(double)(pool.Length * 10 + mxmon * pool.Length);
-                double sizeDifference = (newBrusockEnergy - BrusockEnergy) * 1400;
+                double sizeDifference = (newBrusockEnergy - BrusockEnergy) * 10_000;
                 //Console.WriteLine(sizeDifference);
                 //Console.WriteLine(pool.Length * 10);
                 //Console.WriteLine(sizeDifference + " " + newBrusockEnergy + " " + BrusockEnergy);
