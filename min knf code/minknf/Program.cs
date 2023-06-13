@@ -122,6 +122,7 @@ namespace minknf
             int temperatureChangeFunction = int.Parse(parameters["Функция изменения температуры (1-3)"]);
             int constantInSuperFast = int.Parse(parameters["Константа в сверхбыстром"]);
             int numberOfRepetitions = int.Parse(parameters["Количество повторений"]);
+            double coef = double.Parse(parameters["Коэффициент в функции энергии"]);
 
             
             string resFilePath = Path.Combine(currentDirectory, "res.txt");
@@ -129,7 +130,7 @@ namespace minknf
                 Console.WriteLine("Начало работы алгоритма...");
                 KNF knf = new KNF(vector);
 
-                string res = knf.MinimizeKNFAnnealing(maximumTemperature, minimalTemperature, temperatureChangeFunction, constantInSuperFast, numberOfRepetitions);
+                string res = knf.MinimizeKNFAnnealing(maximumTemperature, minimalTemperature, temperatureChangeFunction, constantInSuperFast, numberOfRepetitions, coef);
                 File.WriteAllText(resFilePath, res);
             }
             else
