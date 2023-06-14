@@ -9,16 +9,14 @@ namespace minknf
 {
     class Annealing : BestCoverageAlgo
     {
-        List<DisjunctiveMonomial> monomials;
         double T = 100;
         double curT = 100;
         // (0; 1)
         double coef = 1;
 
         List<int> canditateInds = new List<int>();
-        public Annealing(int[,] matrix, List<int> absoluteIndexes, List<DisjunctiveMonomial> monomials): base(matrix, absoluteIndexes)
+        public Annealing(int[,] matrix, List<int> absoluteIndexes, List<DisjunctiveMonomial> monomials): base(matrix, absoluteIndexes, monomials)
         {
-            this.monomials = monomials;
             for(int i = 0; i < pool.Length; i++)
             {
                 if (pool[i].Count > 1)
@@ -32,26 +30,18 @@ namespace minknf
                 mxmon = Math.Max(mon.GetSize(), mxmon);
             List<double> sizes = new List<double>();
             List<int> currentBrucock = CreateBrucock(pool);
-            //PrintBrucock("Брусок: ", currentBrucock);
             int currentSize = GetBrucockSize(currentBrucock);
-            //Console.WriteLine("Size: " + currentSize);
             Console.WriteLine("---");
             int i = 0;
             curT = T;
-            double qqq = 1;
-            double www = 0;
+            
             while (curT > minT && i < repeats)
             {
                 List<int> newBrucock = ChangeBrucock(currentBrucock);
                 int newBrucockSize = GetBrucockSize(newBrucock);
-                //double newBrusockEnergy = (double)(newBrucock.Distinct().Count() * 10) / (double)(pool.Length * 10);
                 double newBrusockEnergy = (double)(newBrucock.Distinct().Count() * 10 + GetBrucockSize(newBrucock)) / (double)(pool.Length * 10 + mxmon * pool.Length);
-                //double BrusockEnergy = (double)(currentBrucock.Distinct().Count() * 10)/(double)(pool.Length * 10);
                 double BrusockEnergy = (double)(currentBrucock.Distinct().Count() * 10 + GetBrucockSize(currentBrucock))/(double)(pool.Length * 10 + mxmon * pool.Length);
                 double sizeDifference = (newBrusockEnergy - BrusockEnergy) * 10_000 * coef;
-                //Console.WriteLine(sizeDifference);
-                //Console.WriteLine(pool.Length * 10);
-                //Console.WriteLine(sizeDifference + " " + newBrusockEnergy + " " + BrusockEnergy);
                 if (sizeDifference <= 0)
                 {
                     currentBrucock = newBrucock;
@@ -59,19 +49,7 @@ namespace minknf
                 else
                 {
                     double polikarpia = Math.Exp(-sizeDifference / curT);
-
-                    //double polikarpia = 1 / (1 + Math.Exp(sizeDifference / T));
-                    //Console.WriteLine(Math.Exp(-5 / curT));
-                    //Console.WriteLine(-sizeDifference);
-                    //if (-sizeDifference < -40)
-                    //    Console.WriteLine(-sizeDifference + " " + "123");
-                    //Console.WriteLine(polikarpia);
-                    //Console.WriteLine(polikarpia + " " + curT + " " + sizeDifference);
-                    //qqq = Math.Min(sizeDifference, qqq);
-                    //www = Math.Max(sizeDifference, www);
                     double p = random.NextDouble();
-                    
-                    //Console.WriteLine(sizeDifference +  " " + polikarpia + " " + p + " " + (polikarpia < p));
                     if (p < polikarpia)
                     {
                         currentBrucock = newBrucock;

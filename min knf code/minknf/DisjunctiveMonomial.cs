@@ -75,7 +75,7 @@ namespace minknf
         public DisjunctiveMonomial Consume(DisjunctiveMonomial other)
         {
             if (this.Distance(other) != 1)
-                throw new Exception("Нельзя полготить");
+                throw new Exception("Нельзя поглотить");
 
             DisjunctiveMonomial newMonomial = new DisjunctiveMonomial(this);
             for (int i = 0; i < this.GetArraySize(); i++)

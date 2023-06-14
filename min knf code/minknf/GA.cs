@@ -12,7 +12,7 @@ namespace minknf
         private double crossoverChance;
         private int populationSize;
         PopulationMatrix populationmatrix;
-        public GA(int[,] matrix, int epochs, int populationSize, double mutationChance, double crossoverChance, List<int> geneIndexes) : base(matrix, geneIndexes)
+        public GA(int[,] matrix, List<DisjunctiveMonomial> monomials, int epochs, int populationSize, double mutationChance, double crossoverChance, List<int> geneIndexes) : base(matrix, geneIndexes, monomials)
         {
             this.epochs = epochs;
             this.populationSize = populationSize;
@@ -28,12 +28,18 @@ namespace minknf
             if (coverageMatrix.GetLength(0) == 0 || coverageMatrix.GetLength(1) == 0)
                 return null;
             Console.WriteLine("genetic go");
+            int mxmon = 0;
+            foreach (var mon in monomials)
+                mxmon = Math.Max(mon.GetSize(), mxmon);
             for (int i = 0; i < epochs; i++)
             {
                 Tuple<int[], int[]> childs = null;
                 childs = Crossover();
                 Mutate(childs.Item1);
                 Mutate(childs.Item2);
+                double en = (double)(childs.Item1.ToList().Distinct().Count() * 10 + GetIndSize(childs.Item1.ToList())) / (double)(pool.Length * 10 + mxmon * pool.Length);
+                Console.WriteLine(en);
+                //Console.WriteLine(WeightOfIndividum(childs.Item1) + " " + WeightOfIndividum(childs.Item2));
                 ReplaceRandomIndividum(childs.Item1);
                 ReplaceRandomIndividum(childs.Item2);
             }
@@ -124,6 +130,15 @@ namespace minknf
             }
             
             return ans;
+        }
+        private int GetIndSize(List<int> ind)
+        {
+            int size = 0;
+            foreach (var atom in ind.Distinct().ToList())
+            {
+                size += monomials[atom].GetSize();
+            }
+            return size;
         }
     }
 }

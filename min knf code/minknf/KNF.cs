@@ -54,8 +54,13 @@ namespace minknf
             indexesInMatrixWithoutCore = indexesInMatrixWithoutCore.Except(coreImplicants).ToList();
             coreImplicants = coreImplicants.Distinct().ToList();
 
+            List<DisjunctiveMonomial> monomialsGA = new List<DisjunctiveMonomial>();
+            foreach (var i in indexesInMatrixWithoutCore)
+            {
+                monomialsGA.Add(this.monomials[i]);
+            }
 
-            GA ga = new GA(matrixWithoutCore, epochs, populationSize, mutationChance, crossoverChance, indexesInMatrixWithoutCore);
+            GA ga = new GA(matrixWithoutCore, monomialsGA, epochs, populationSize, mutationChance, crossoverChance, indexesInMatrixWithoutCore);
             List<int> best = ga.GO();
 
             List<DisjunctiveMonomial> ans = new List<DisjunctiveMonomial>();
@@ -104,11 +109,7 @@ namespace minknf
 
             consRes = consRes.Distinct(new DisjunctiveMonomialEqualityComparer()).ToList();
 
-
-        
-
             int[,] implicantMatrix = new int[consRes.Count, startingMonomials.Count];
-
             for (int i = 0; i < consRes.Count; i++)
             {
                 for (int j = 0; j < startingMonomials.Count; j++)
@@ -116,14 +117,16 @@ namespace minknf
                     implicantMatrix[i, j] = (consRes[i].DoesCover(startingMonomials[j]) ? 1 : 0);
                 }
             }
-
+            //Matrix.CoutMatr(implicantMatrix);
             this.setMonomials(consRes);
-
             List<int> coreImplicants = GetCoreImplicantsIndexesInMatrix(implicantMatrix);
+
+            foreach(var i in coreImplicants)
+                Console.WriteLine(i);
 
             int[,] matrixWithoutCore = MatrixCore(implicantMatrix, coreImplicants);
 
-
+            
 
             List<int> indexesInMatrixWithoutCore = Enumerable.Range(0, implicantMatrix.GetLength(0)).ToList();
             indexesInMatrixWithoutCore = indexesInMatrixWithoutCore.Except(coreImplicants).ToList();
@@ -135,10 +138,8 @@ namespace minknf
             }
 
             coreImplicants = coreImplicants.Distinct().ToList();
-
-            //GA ga = new GA(matrixWithoutCore, epochs, populationSize, mutationChance, crossoverChance, indexesInMatrixWithoutCore);
+           
             Annealing annealing = new Annealing(matrixWithoutCore, indexesInMatrixWithoutCore, monomialsForAnnealing);
-            //annealing.Anneal();
             List<int> best = annealing.Anneal(T, minT, function, C, repeats, coef);
 
             List<DisjunctiveMonomial> ans = new List<DisjunctiveMonomial>();
@@ -149,7 +150,6 @@ namespace minknf
                     ans.Add(monomials[i]);
             this.monomials = ans;
             return this.ToString();
-            //return "qq";
         }
         private void setMonomials(List<DisjunctiveMonomial> toSet)
         {
@@ -202,12 +202,17 @@ namespace minknf
                 {
                     if (monomialsToConsume[i].Distance(monomialsToConsume[j]) == 1)
                     {
-                        monomialsAfterConsumption.Add(monomialsToConsume[i].Consume(monomialsToConsume[j]));
+                        //Console.WriteLine(monomialsToConsume[i].ToString());
+                        DisjunctiveMonomial d = monomialsToConsume[i].Consume(monomialsToConsume[j]);
+                        if (!monomialsAfterConsumption.Any(n => n.vars.SequenceEqual(d.vars)))
+                            monomialsAfterConsumption.Add(d);
                         toDelete.Add(i);
                         toDelete.Add(j);
                     }
                 }
             }
+            //Console.WriteLine(monomialsToConsume.Count + " " + monomialsAfterConsumption.Count);
+            
             toDelete = toDelete.Distinct().ToList();
             toDelete.Sort();
             for (int i = toDelete.Count - 1; i >= 0; i--)

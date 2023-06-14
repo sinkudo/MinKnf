@@ -11,6 +11,7 @@ namespace minknf
         protected private List<int>[] pool;
         protected private List<int> absoluteIndexes;
         protected Random random = new Random();
+        protected List<DisjunctiveMonomial> monomials;
         protected bool CompareFitness(int[] possibleReplace, int[] currentIndividum)
         {
 
@@ -18,13 +19,14 @@ namespace minknf
             int curCount = currentIndividum.Distinct().Count();
             return (replaceCount < curCount) || (replaceCount == curCount && WeightOfIndividum(possibleReplace) > WeightOfIndividum(currentIndividum));
         }
-        protected BestCoverageAlgo(int[,] matrix, List<int> absoluteIndexes)
+        protected BestCoverageAlgo(int[,] matrix, List<int> absoluteIndexes, List<DisjunctiveMonomial> monomials)
         {
             coverageMatrix = matrix;
+            this.monomials = monomials;
             this.absoluteIndexes = absoluteIndexes;
             initPool();
         }
-        private int WeightOfIndividum(int[] individum)
+        public int WeightOfIndividum(int[] individum)
         {
             int weight = 0;
             foreach (var i in individum.Distinct().ToArray())
